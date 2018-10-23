@@ -2,11 +2,11 @@
 
 ## Problem Statement
 
-We've seen that React components come with some neat-o bell and whistles. They
-can to be nested within each other. They can pass information and logic between
-them with props and can keep track of their own information in state.
+We've seen that React components come with some neat-o bells and whistles. They
+can be nested within each other. They can pass information and logic between
+them with props and they can keep track of their own information in state.
 
-So far, though, we've been restricted to displaying information organized by the
+So far though, we've been restricted to displaying information organized by the
 React app itself. In this lesson, we're going to go a step further and
 incorporate remote data into our React apps. Using fetch requests to APIs, we
 can build dynamic, responsive apps around data that is provided to us remotely.
@@ -31,7 +31,7 @@ Both of these websites are built with React. When you go to one of these sites,
 React doesn't have the specific movie or image content. If you're on a slow
 connection (or [want to mimic one using the Chrome Dev Tools][fake3g]), you can
 see what is happening more clearly. _React_ shows up first and renders
-_something_. Sometimes it is just the background or the skeleton of a website -
+_something_. Sometimes it is just the background or the skeleton of a website, or
 maybe navigation and CSS. On Instagram, a photo 'card' might appear but without
 an image or username attached.
 
@@ -157,7 +157,7 @@ render() {
 }
 ```
 
-Then, when setting up the fetch request, we can just the entire state within the
+Then, when setting up the fetch request, we can just pass the entire state within the
 body, as there are no other values:
 
 ```js
