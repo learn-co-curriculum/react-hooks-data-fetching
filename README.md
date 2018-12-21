@@ -157,7 +157,7 @@ render() {
 }
 ```
 
-Then, when setting up the fetch request, we can just the entire state within the
+Then, when setting up the fetch request, we can use the entire state within the
 body, as there are no other values:
 
 ```js
