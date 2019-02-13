@@ -2,8 +2,6 @@
 
 ## Problem Statement
 
-Heklo
-
 We've seen that React components come with some neat-o bell and whistles. They
 can to be nested within each other. They can pass information and logic between
 them with props and can keep track of their own information in state.
