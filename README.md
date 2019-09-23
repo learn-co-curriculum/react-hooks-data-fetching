@@ -3,7 +3,7 @@
 ## Problem Statement
 
 We've seen that React components come with some neat-o bell and whistles. They
-can to be nested within each other. They can pass information and logic between
+can be nested within each other. They can pass information and logic between
 them with props and can keep track of their own information in state.
 
 So far, though, we've been restricted to displaying information organized by the
