@@ -141,7 +141,6 @@ state = {
 
 //since the id values are the same as the keys in state, we can write an abstract setState here
 handleChange = event => {
-  event.persist()
   this.setState({
     [event.target.id]: event.target.value
   })
