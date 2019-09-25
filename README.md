@@ -141,7 +141,6 @@ state = {
 
 //since the id values are the same as the keys in state, we can write an abstract setState here
 handleChange = event => {
-  event.persist()
   this.setState({
     [event.target.id]: event.target.value
   })
@@ -166,7 +165,7 @@ handleSubmit = event => {
   fetch('the server URL', {
     method: "POST",
     headers: {
-      'Content-Type: application/json'
+      "Content-Type": "application/json"
     },
     body: JSON.stringify(this.state)
   })
@@ -185,7 +184,7 @@ writing simpler component code, include `fetch` calls in the same component as
 your top level state. You can always pass down methods as props that contain
 `fetch`.
 
-#### Resources (if applicable)
+## Resources
 
 - [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
 
