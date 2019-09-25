@@ -184,7 +184,7 @@ writing simpler component code, include `fetch` calls in the same component as
 your top level state. You can always pass down methods as props that contain
 `fetch`.
 
-#### Resources (if applicable)
+## Resources
 
 - [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
 
