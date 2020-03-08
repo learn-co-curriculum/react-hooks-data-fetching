@@ -84,7 +84,7 @@ export default App
 ```
 
 In the code above, once App mounts, a `fetch` is called to an API. Once data is
-returned to the API, the simplest way to store some or all of it is to put it in
+returned from the API, the simplest way to store some or all of it is to put it in
 state.
 
 If you have JSX content reliant on that state information, when `setState` is
@@ -115,7 +115,7 @@ render() {
 ```
 
 This lets us send requests on demand. Submitting form data would be handled this
-way. using a POST request instead of GET.
+way, using a POST request instead of GET.
 
 A slightly more complicated example would be the infinite scroll of sites like
 Instagram. An event listener tied to changes in the scroll position of a page
