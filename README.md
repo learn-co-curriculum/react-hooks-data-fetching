@@ -35,83 +35,76 @@ _something_. Sometimes it is just the background or the skeleton of a website, o
 maybe navigation and CSS. On Instagram, a photo 'card' might appear but without
 an image or username attached.
 
-React is _mounting_ its basic components _first_. Once these are mounted, remote
-data is then requested. When that data has been received, React runs through an
-update of the necessary components and fills in the info it received. Text
-content will appear, user information, etc... This first set of data is likely
-just a JSON object specific to the user or content requested. This object might
-contain image URLs, so right after the component update, images will be able
-to load.
+React is _updating the DOM_ based on the JSX being returned by its components
+_first_. Once the DOM has been updated, remote data is then requested. When that data
+has been received, React runs through an update of the necessary components and
+fills in the info it received. Text content will appear, user information,
+etc... This first set of data is likely just a JSON object specific to the user
+or content requested. This object might contain image URLs, so right after the
+component update, images will be able to load.
 
-So, since the data is being requested _after_ React has mounted its components,
-is there a component lifecycle method that might be useful here?
+So, since the data is being requested _after_ React has updated the DOM,
+is there a _side effect_ that might be useful here?
 
-Why yes there is! `componentDidMount` happens to be a great place for making
-fetch requests. By putting a `fetch()` within `componentDidMount`, when the data
-is received, we can use `setState` to store the received data. This causes an
-update with that remote data stored in state. A very simple implementation of
-the App component with `fetch` might look like this:
+Why yes there is! Whenever we want to fetch data in our components, the
+`useEffect` hook gives us a great place for making fetch requests. By putting a
+`fetch()` within `useEffect`, when the data is received, we can use `setState`
+to store the received data. This causes an update with that remote data stored
+in state. A very simple implementation of the App component with `fetch` might
+look like this:
 
 ```js
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 
-class App extends Component {
+function App() {
+  const [peopleInSpace, setPeopleInSpace] = useState([])
 
-  state = {
-    peopleInSpace: []
-  }
-
-  render() {
-    return (
-      <div>
-        {this.state.peopleInSpace.map(person => person.name)}
-      </div>
-    )
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     fetch('http://api.open-notify.org/astros.json')
       .then(response => response.json())
       .then(data => {
-        this.setState({
-          peopleInSpace: data.people
-        })
+        setPeopleInSpace(data.people)
       })
-  }
+  }, []) 
+  // use an empty dependencies array, so we only run the fetch request ONCE
+
+  return (
+    <div>
+      {peopleInSpace.map(person => person.name)}
+    </div>
+  )
 }
 
 export default App
 ```
 
-In the code above, once App mounts, a `fetch` is called to an API. Once data is
-returned from the API, the simplest way to store some or all of it is to put it in
-state.
+In the code above, after the `App` component has been rendered to the DOM, a
+`fetch` is called to an API. Once data is returned from the API, the simplest
+way to store some or all of it is to put it in state.
 
 If you have JSX content reliant on that state information, when `setState` is
 called and the component re-renders, the content will appear.
 
-Placing `fetch` in `componentDidMount` is ideal for data that you need
-immediately when a user visits your website or uses your app. Since
-`componentDidMount` is also commonly used to initialize intervals, it is ideal
-to set up any repeating fetch requests here as well.
+Placing `fetch` in a `useEffect` with an empty dependencies array is ideal for
+data that you need immediately when a user visits your website or uses your app.
+Since `useEffect` is also commonly used to initialize intervals, it is ideal to
+set up any repeating fetch requests here as well.
 
 #### Using `fetch` With Events
 
-We aren't limited to sending fetch requests when a component is mounted. We can
-also tie them into events:
+We aren't limited to sending fetch requests when a component is rendered the
+first time. We can also tie them into events:
 
 ```js
-handleClick = event => {
+function handleClick() {
   fetch('your API url')
     .then(res => res.json())
-    .then(json => this.setState({data: json}))
+    .then(json => setData(json))
 }
 
-render() {
-  return (
-    <button onClick={this.handleClick}>Click to Fetch!</button>
-  )
-}
+return (
+  <button onClick={handleClick}>Click to Fetch!</button>
+)
 ```
 
 This lets us send requests on demand. Submitting form data would be handled this
@@ -134,40 +127,39 @@ expecting two values within the body of the POST, `username` and `password`.
 Setting up a React controlled form, we can structure our state in the same way:
 
 ```js
-state = {
+const [formData, setFormData] = useState({
   username: "",
   password: ""
-}
+})
 
-//since the id values are the same as the keys in state, we can write an abstract setState here
-handleChange = event => {
-  this.setState({
+//since the id values are the same as the keys in formData, we can write an abstract setFormData here
+function handleChange(event) {
+  setFormData({
+    ...formData,
     [event.target.id]: event.target.value
   })
 }
 
-render() {
-  return (
-    <form onSubmit={this.handleSubmit}>
-      <input type="text" id="username" value={this.state.username} onChange={this.handleChange}/>
-      <input type="text" id="password" value={this.state.password} onChange={this.handleChange}/>
-    </form>
-  )
-}
+return (
+  <form onSubmit={this.handleSubmit}>
+    <input type="text" id="username" value={formData.username} onChange={handleChange}/>
+    <input type="text" id="password" value={formData.password} onChange={handleChange}/>
+  </form>
+)
 ```
 
 Then, when setting up the fetch request, we can just pass the entire state within the
 body, as there are no other values:
 
 ```js
-handleSubmit = event => {
+function handleSubmit(event) {
   event.preventDefault()
   fetch('the server URL', {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(this.state)
+    body: JSON.stringify(formData)
   })
 }
 ```
