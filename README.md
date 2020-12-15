@@ -1,4 +1,4 @@
-# Asynchronous React
+# Data Fetching in React
 
 ## Problem Statement
 
@@ -16,29 +16,29 @@ can build dynamic, responsive apps around data that is provided to us remotely.
 - Introduce the use of `fetch` within components
 - Consider some of the best places to include `fetch` in our React app
 
-#### Using `fetch` Within React
+## Using `fetch` Within React
 
 For a minute, consider how a site like [Instagram][insta] works. If you've got
 an account on Instagram, when you visit the site, you'll see an endless scroll
 of photos from people you follow. Everyone sees the same _Instagram_ website,
 but the images displayed are unique to the user.
 
-Similarly, consider [IMDb, the Internet Movie Database][imdb]. When you click to
-look at a movie's information, the page is always the same. The data, the
-images, the reviews, the cast... this information changes.
+Similarly, consider [AirBnb][airbnb]. When you click to look at a listing's
+information, the page layout is always the same. The data, the images, the
+reviews... this information changes.
 
 Both of these websites are built with React. When you go to one of these sites,
-React doesn't have the specific movie or image content. If you're on a slow
+React doesn't have the specific listing or image content. If you're on a slow
 connection (or [want to mimic one using the Chrome Dev Tools][fake3g]), you can
 see what is happening more clearly. _React_ shows up first and renders
-_something_. Sometimes it is just the background or the skeleton of a website, or
-maybe navigation and CSS. On Instagram, a photo 'card' might appear but without
-an image or username attached.
+_something_. Sometimes it is just the background or the skeleton of a website,
+or maybe navigation and CSS. On Instagram, a photo 'card' might appear but
+without an image or username attached.
 
 React is _updating the DOM_ based on the JSX being returned by its components
-_first_. Once the DOM has been updated, remote data is then requested. When that data
-has been received, React runs through an update of the necessary components and
-fills in the info it received. Text content will appear, user information,
+_first_. Once the DOM has been updated, remote data is then requested. When that
+data has been received, React runs through an update of the necessary components
+and fills in the info it received. Text content will appear, user information,
 etc... This first set of data is likely just a JSON object specific to the user
 or content requested. This object might contain image URLs, so right after the
 component update, images will be able to load.
@@ -54,41 +54,63 @@ in state. A very simple implementation of the App component with `fetch` might
 look like this:
 
 ```js
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 
 function App() {
-  const [peopleInSpace, setPeopleInSpace] = useState([])
+  const [peopleInSpace, setPeopleInSpace] = useState([]);
 
   useEffect(() => {
-    fetch('http://api.open-notify.org/astros.json')
-      .then(response => response.json())
-      .then(data => {
-        setPeopleInSpace(data.people)
-      })
-  }, []) 
+    fetch("http://api.open-notify.org/astros.json")
+      .then((response) => response.json())
+      .then((data) => {
+        setPeopleInSpace(data.people);
+      });
+  }, []);
   // use an empty dependencies array, so we only run the fetch request ONCE
 
-  return (
-    <div>
-      {peopleInSpace.map(person => person.name)}
-    </div>
-  )
+  return <div>{peopleInSpace.map((person) => person.name)}</div>;
 }
 
-export default App
+export default App;
 ```
 
 In the code above, after the `App` component has been rendered to the DOM, a
 `fetch` is called to an API. Once data is returned from the API, the simplest
 way to store some or all of it is to put it in state.
 
-If you have JSX content reliant on that state information, when `setState` is
-called and the component re-renders, the content will appear.
+If you have JSX content reliant on that state information, when
+`setPeopleInSpace` is called and the component re-renders, the content will
+appear.
 
 Placing `fetch` in a `useEffect` with an empty dependencies array is ideal for
 data that you need immediately when a user visits your website or uses your app.
 Since `useEffect` is also commonly used to initialize intervals, it is ideal to
 set up any repeating fetch requests here as well.
+
+We can also add a loading indicator using this technique. Since our component
+will render _before_ `useEffect` runs our `fetch` request, we can set up another
+state variable to add a loading indicator, like this:
+
+```js
+function App() {
+  const [peopleInSpace, setPeopleInSpace] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    fetch("http://api.open-notify.org/astros.json")
+      .then((response) => response.json())
+      .then((data) => {
+        setPeopleInSpace(data.people);
+        setIsLoaded(true);
+      });
+  }, []);
+
+  // if the data hasn't been loaded, show a loading indicator
+  if (!isLoaded) return <h3>Loading...</h3>;
+
+  return <div>{peopleInSpace.map((person) => person.name)}</div>;
+}
+```
 
 #### Using `fetch` With Events
 
@@ -97,14 +119,12 @@ first time. We can also tie them into events:
 
 ```js
 function handleClick() {
-  fetch('your API url')
-    .then(res => res.json())
-    .then(json => setData(json))
+  fetch("your API url")
+    .then((res) => res.json())
+    .then((json) => setData(json));
 }
 
-return (
-  <button onClick={handleClick}>Click to Fetch!</button>
-)
+return <button onClick={handleClick}>Click to Fetch!</button>;
 ```
 
 This lets us send requests on demand. Submitting form data would be handled this
@@ -129,38 +149,48 @@ Setting up a React controlled form, we can structure our state in the same way:
 ```js
 const [formData, setFormData] = useState({
   username: "",
-  password: ""
-})
+  password: "",
+});
 
 //since the id values are the same as the keys in formData, we can write an abstract setFormData here
 function handleChange(event) {
   setFormData({
     ...formData,
-    [event.target.id]: event.target.value
-  })
+    [event.target.id]: event.target.value,
+  });
 }
 
 return (
   <form onSubmit={this.handleSubmit}>
-    <input type="text" id="username" value={formData.username} onChange={handleChange}/>
-    <input type="text" id="password" value={formData.password} onChange={handleChange}/>
+    <input
+      type="text"
+      id="username"
+      value={formData.username}
+      onChange={handleChange}
+    />
+    <input
+      type="text"
+      id="password"
+      value={formData.password}
+      onChange={handleChange}
+    />
   </form>
-)
+);
 ```
 
-Then, when setting up the fetch request, we can just pass the entire state within the
-body, as there are no other values:
+Then, when setting up the fetch request, we can just pass the entire state
+within the body, as there are no other values:
 
 ```js
 function handleSubmit(event) {
-  event.preventDefault()
-  fetch('the server URL', {
+  event.preventDefault();
+  fetch("the server URL", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(formData)
-  })
+    body: JSON.stringify(formData),
+  });
 }
 ```
 
@@ -170,16 +200,26 @@ data, and it is already in the right format!
 
 ## Conclusion
 
-There are no hard and fast rules for how to include fetch requests, and a lot of
-structure will depend on the data you're working with. As a general practice for
-writing simpler component code, include `fetch` calls in the same component as
-your top level state. You can always pass down methods as props that contain
-`fetch`.
+When you need to _get_ data from an API when your component is first rendered,
+using `useEffect` with an empty dependencies array, like this, is a good approach:
+
+```js
+useEffect(() => {
+  fetch("/api")
+    .then((r) => r.json())
+    .then(setData);
+}, []);
+```
+
+Aside from that, there are no hard and fast rules for how to include fetch
+requests, and a lot of structure will depend on the data you're working with. As
+a general practice for writing simpler component code, include `fetch` calls in
+the same component as your top level state.
 
 ## Resources
 
 - [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
 
 [insta]: https://www.instagram.com/
-[imdb]: https://www.imdb.com/
+[airbnb]: https://airbnb.com/
 [fake3g]: https://developers.google.com/web/tools/chrome-devtools/network-performance/network-conditions
