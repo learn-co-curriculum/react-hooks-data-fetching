@@ -3,7 +3,7 @@
 ## Learning Goals
 
 - Use `fetch` within components
-- Decide when to use `fetch` from an event handler or `useEffect` callback
+- Decide whether to use `fetch` from an event handler or `useEffect` callback
 
 ## Problem Statement
 
