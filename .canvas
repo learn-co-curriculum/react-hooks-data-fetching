@@ -4,4 +4,7 @@
   :course_id: 3264
   :canvas_url: https://learning.flatironschool.com/courses/3264/pages/64294
   :type: page
-    
+- :id: 64294
+  :course_id: 3264
+  :canvas_url: https://learning.flatironschool.com/courses/3264/pages/data-fetching-in-react
+  :type: page

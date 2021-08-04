@@ -56,7 +56,7 @@ putting a `fetch()` within `useEffect`, when the data is received, we can use
 data stored in state. A very simple implementation of the App component with
 `fetch` might look like this:
 
-```js
+```jsx
 import React, { useState, useEffect } from "react";
 
 function App() {
@@ -99,7 +99,7 @@ We can also add a loading indicator using this technique. Since our component
 will render once _before_ `useEffect` runs our `fetch` request, we can set up
 another state variable to add a loading indicator, like this:
 
-```js
+```jsx
 function App() {
   const [peopleInSpace, setPeopleInSpace] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -125,7 +125,7 @@ function App() {
 We aren't limited to sending fetch requests with `useEffect`. We can also tie
 them into events:
 
-```js
+```jsx
 function handleClick() {
   fetch("your API url")
     .then((res) => res.json())
@@ -154,42 +154,44 @@ expecting two values within the body of the POST, `username` and `password`.
 
 Setting up a React controlled form, we can structure our state in the same way:
 
-```js
-const [formData, setFormData] = useState({
-  username: "",
-  password: "",
-});
-
-//since the id values are the same as the keys in formData, we can write an abstract setFormData here
-function handleChange(event) {
-  setFormData({
-    ...formData,
-    [event.target.id]: event.target.value,
+```jsx
+function Form() {
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
   });
-}
 
-return (
-  <form onSubmit={handleSubmit}>
-    <input
-      type="text"
-      id="username"
-      value={formData.username}
-      onChange={handleChange}
-    />
-    <input
-      type="text"
-      id="password"
-      value={formData.password}
-      onChange={handleChange}
-    />
-  </form>
-);
+  //since the id values are the same as the keys in formData, we can write an abstract setFormData here
+  function handleChange(event) {
+    setFormData({
+      ...formData,
+      [event.target.id]: event.target.value,
+    });
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        id="username"
+        value={formData.username}
+        onChange={handleChange}
+      />
+      <input
+        type="text"
+        id="password"
+        value={formData.password}
+        onChange={handleChange}
+      />
+    </form>
+  );
+}
 ```
 
 Then, when setting up the fetch request, we can just pass the entire state
 within the body, as there are no other values:
 
-```js
+```jsx
 function handleSubmit(event) {
   event.preventDefault();
   fetch("the server URL", {
