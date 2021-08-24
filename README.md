@@ -50,7 +50,7 @@ is there a _side effect_ that might be useful here?
 
 Why yes there is! Whenever we want to fetch data in our components without
 making a user trigger that request by clicking a button or submitting a form,
-the `useEffect` hook gives us a great place for making fetch requests. By
+the `useEffect` hook gives us a great place to do that. By
 putting a `fetch()` within `useEffect`, when the data is received, we can use
 `setState` to store the received data. This causes an update with that remote
 data stored in state. A very simple implementation of the App component with
