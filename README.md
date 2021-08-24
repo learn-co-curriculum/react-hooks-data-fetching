@@ -234,5 +234,5 @@ the same component as your top level state.
 
 [insta]: https://www.instagram.com/
 [airbnb]: https://airbnb.com/
-[fake3g]: https://developers.google.com/web/tools/chrome-devtools/network-performance/network-conditions
+[fake3g]: https://developer.chrome.com/docs/devtools/network/reference#throttling
 [react ajax]: https://reactjs.org/docs/faq-ajax.html#example-using-ajax-results-to-set-local-state
