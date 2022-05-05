@@ -48,7 +48,7 @@ component update, images will be able to load.
 So, since the data is being requested _after_ React has updated the DOM,
 is there a _side effect_ that might be useful here?
 
-Why yes there is! Whenever we want to fetch data in our components without
+Well, yes there is! Whenever we want to fetch data in our components without
 making a user trigger that request by clicking a button or submitting a form,
 the `useEffect` hook gives us a great place to do that. By
 putting a `fetch()` within `useEffect`, when the data is received, we can use
